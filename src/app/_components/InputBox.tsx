@@ -2,6 +2,11 @@ import { ArrowUpOutlined, GlobalOutlined } from "@ant-design/icons";
 import { type KeyboardEvent, useCallback, useEffect, useState } from "react";
 
 import { Button } from "~/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "~/components/ui/tooltip";
 import { Atom } from "~/core/icons";
 import { cn } from "~/core/utils";
 
@@ -128,24 +133,30 @@ export function InputBox({
           </Button>
         </div>
         <div className="flex shrink-0 items-center gap-2">
-          <Button
-            variant="outline"
-            size="icon"
-            className={cn(
-              "h-10 w-10 rounded-full",
-              responding ? "bg-button-hover" : "bg-button",
-            )}
-            title={responding ? "Cancel" : "Send"}
-            onClick={handleSendMessage}
-          >
-            {responding ? (
-              <div className="flex h-10 w-10 items-center justify-center">
-                <div className="h-4 w-4 rounded-sm bg-red-300" />
-              </div>
-            ) : (
-              <ArrowUpOutlined />
-            )}
-          </Button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="outline"
+                size="icon"
+                className={cn(
+                  "h-10 w-10 rounded-full",
+                  responding ? "bg-button-hover" : "bg-button",
+                )}
+                onClick={handleSendMessage}
+              >
+                {responding ? (
+                  <div className="flex h-10 w-10 items-center justify-center">
+                    <div className="h-4 w-4 rounded-sm bg-red-300" />
+                  </div>
+                ) : (
+                  <ArrowUpOutlined />
+                )}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{responding ? "Cancel" : "Send"}</p>
+            </TooltipContent>
+          </Tooltip>
         </div>
       </div>
     </div>
