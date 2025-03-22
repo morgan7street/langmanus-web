@@ -114,29 +114,37 @@ function TravilySearchToolCallView({
             </div>
           </div>
           <ul className="flex flex-col gap-2 text-sm">
-            {results.map((result: { url: string; title: string }) => (
-              <li key={result.url} className="list-item list-inside pl-6">
-                <a
-                  className="flex items-center gap-2"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href={result.url}
+            {results.map(
+              (result: { url: string; title: string }, index: number) => (
+                <li
+                  key={result.url}
+                  className="animate-bg-blink list-item list-inside pl-6"
+                  style={{
+                    animationDelay: `${200 + index * 100}ms`,
+                  }}
                 >
-                  <img
-                    className="h-4 w-4 rounded-full bg-slate-100 shadow-sm"
-                    width={16}
-                    height={16}
-                    src={new URL(result.url).origin + "/favicon.ico"}
-                    alt={result.title}
-                    onError={(e) => {
-                      e.currentTarget.src =
-                        "https://perishablepress.com/wp/wp-content/images/2021/favicon-standard.png";
-                    }}
-                  />
-                  {result.title}
-                </a>
-              </li>
-            ))}
+                  <a
+                    className="flex items-center gap-2"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href={result.url}
+                  >
+                    <img
+                      className="h-4 w-4 rounded-full bg-slate-100 shadow-sm"
+                      width={16}
+                      height={16}
+                      src={new URL(result.url).origin + "/favicon.ico"}
+                      alt={result.title}
+                      onError={(e) => {
+                        e.currentTarget.src =
+                          "https://perishablepress.com/wp/wp-content/images/2021/favicon-standard.png";
+                      }}
+                    />
+                    {result.title}
+                  </a>
+                </li>
+              ),
+            )}
           </ul>
         </div>
       )}
