@@ -8,7 +8,9 @@
 
 LangManus is a community-driven AI automation framework that builds upon the incredible work of the open source community. Our goal is to combine language models with specialized tools for tasks like web search, crawling, and Python code execution, while giving back to the community that made this possible.
 
-## Demo Video
+## Demo
+
+![demo](https://github.com/langmanus/langmanus/blob/main/assets/demo.gif?raw=true)
 
 - [View on YouTube](https://youtu.be/sZCHqrQBUGk)
 
