@@ -6,7 +6,7 @@ import { useCallback, useRef } from "react";
 import { useAutoScrollToBottom } from "~/components/hooks/useAutoScrollToBottom";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { TooltipProvider } from "~/components/ui/tooltip";
-import { sendMessage, useStore } from "~/core/store";
+import { sendMessage, useInitTeamMembers, useStore } from "~/core/store";
 import { cn } from "~/core/utils";
 
 import { AppHeader } from "./_components/AppHeader";
@@ -42,6 +42,7 @@ export default function HomePage() {
     [],
   );
 
+  useInitTeamMembers();
   useAutoScrollToBottom(scrollAreaRef, responding);
 
   return (
@@ -72,8 +73,16 @@ export default function HomePage() {
                   👋 Hello, there!
                 </h3>
                 <div className="px-4 text-center text-lg text-gray-400">
-                  LangManus, built on cutting-edge language models, helps you
-                  search on web, browse information, and handle complex tasks.
+                  <a
+                    href="https://github.com/langmanus/langmanus"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline hover:text-blue-600"
+                  >
+                    LangManus
+                  </a>
+                  , built on cutting-edge language models, helps you search on
+                  web, browse information, and handle complex tasks.
                 </div>
               </div>
             )}

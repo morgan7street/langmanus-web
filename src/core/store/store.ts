@@ -1,6 +1,12 @@
+import { useEffect } from "react";
 import { create } from "zustand";
 
-import { type ChatEvent, chatStream } from "../api";
+import {
+  type ChatEvent,
+  chatStream,
+  queryTeamMembers,
+  type TeamMember,
+} from "../api";
 import { chatStream as mockChatStream } from "../api/mock";
 import {
   type WorkflowMessage,
@@ -11,18 +17,46 @@ import { clone } from "../utils";
 import { WorkflowEngine } from "../workflow";
 
 export const useStore = create<{
+  teamMembers: TeamMember[];
+  enabledTeamMembers: string[];
   messages: Message[];
   responding: boolean;
   state: {
     messages: { role: string; content: string }[];
   };
 }>(() => ({
+  teamMembers: [],
+  enabledTeamMembers: [],
   messages: [],
   responding: false,
   state: {
     messages: [],
   },
 }));
+
+export function useInitTeamMembers() {
+  useEffect(() => {
+    const enabledTeamMembers = localStorage.getItem(
+      "langmanus.config.enabledTeamMembers",
+    );
+    void queryTeamMembers().then((teamMembers) => {
+      useStore.setState({
+        teamMembers,
+        enabledTeamMembers: enabledTeamMembers
+          ? JSON.parse(enabledTeamMembers)
+          : teamMembers.map((member) => member.name),
+      });
+    });
+  }, []);
+}
+
+export function setEnabledTeamMembers(enabledTeamMembers: string[]) {
+  useStore.setState({ enabledTeamMembers });
+  localStorage.setItem(
+    "langmanus.config.enabledTeamMembers",
+    JSON.stringify(enabledTeamMembers),
+  );
+}
 
 export function addMessage(message: Message) {
   useStore.setState((state) => ({ messages: [...state.messages, message] }));
@@ -62,7 +96,15 @@ export async function sendMessage(
   if (window.location.search.includes("mock")) {
     stream = mockChatStream(message);
   } else {
-    stream = chatStream(message, useStore.getState().state, params, options);
+    stream = chatStream(
+      message,
+      useStore.getState().state,
+      {
+        ...params,
+        teamMembers: useStore.getState().enabledTeamMembers,
+      },
+      options,
+    );
   }
   setResponding(true);
 
@@ -80,7 +122,7 @@ export async function sendMessage(
           addMessage(textMessage);
           break;
         case "final_session_state":
-          _setState({
+          _setWorkflowFinalState({
             messages: event.data.messages,
           });
           break;
@@ -112,7 +154,7 @@ export async function sendMessage(
               content: { workflow: updatedWorkflow },
             });
           }
-          _setState({
+          _setWorkflowFinalState({
             messages: workflow.finalState?.messages ?? [],
           });
           break;
@@ -139,7 +181,7 @@ export function setResponding(responding: boolean) {
   useStore.setState({ responding });
 }
 
-export function _setState(state: {
+export function _setWorkflowFinalState(state: {
   messages: { role: string; content: string }[];
 }) {
   useStore.setState({ state });

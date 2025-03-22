@@ -9,6 +9,11 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "~/components/ui/accordion";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "~/components/ui/tooltip";
 import { Atom } from "~/core/icons";
 import { cn } from "~/core/utils";
 import {
@@ -133,6 +138,8 @@ function PlanTaskView({ task }: { task: ThinkingTask }) {
       let jsonString = task.payload.text.trim();
       if (jsonString.startsWith("```json\n")) {
         jsonString = jsonString.substring(7);
+      } else if (jsonString.startsWith("```ts\n")) {
+        jsonString = jsonString.substring(5);
       }
       if (jsonString.endsWith("\n```")) {
         jsonString = jsonString.substring(0, jsonString.length - 3);
@@ -173,10 +180,17 @@ function PlanTaskView({ task }: { task: ThinkingTask }) {
           }}
         >
           <AccordionItem value="deep-thought" className="border-none">
-            <AccordionTrigger className="flex w-fit flex-none items-center gap-2 rounded-2xl border px-3 py-1 text-sm hover:no-underline [&[data-state=open]>svg]:rotate-180">
-              <Atom className="h-4 w-4" />
-              <span>Deep Thought</span>
-            </AccordionTrigger>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <AccordionTrigger className="flex w-fit flex-none items-center gap-2 rounded-2xl border px-3 py-1 text-sm hover:no-underline [&[data-state=open]>svg]:rotate-180">
+                  <Atom className="h-4 w-4" />
+                  <span>Deep Thought</span>
+                </AccordionTrigger>
+              </TooltipTrigger>
+              <TooltipContent side="left">
+                <p>{isThinkingCollapsed ? "Show thought" : "Hide thought"}</p>
+              </TooltipContent>
+            </Tooltip>
             <AccordionContent>
               <Markdown className="border-l-2 pt-2 pl-6 text-sm opacity-70">
                 {reason}
