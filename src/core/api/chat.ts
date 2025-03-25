@@ -33,16 +33,25 @@ export function chatStream(
 }
 
 export async function queryTeamMembers() {
-  const response = await fetch(
-    (env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api") + "/team_members",
-    { method: "GET" },
-  );
-  const { team_members } = (await response.json()) as {
-    team_members: Record<string, TeamMember>;
-  };
-  const allTeamMembers = Object.values(team_members);
-  return [
-    ...allTeamMembers.filter((member) => !member.is_optional),
-    ...allTeamMembers.filter((member) => member.is_optional),
-  ];
+  try {
+    const response = await fetch(
+      (env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api") +
+        "/team_members",
+      { method: "GET" },
+    );
+    const { team_members } = (await response.json()) as {
+      team_members: Record<string, TeamMember>;
+    };
+    const allTeamMembers = Object.values(team_members);
+    return [
+      ...allTeamMembers.filter((member) => !member.is_optional),
+      ...allTeamMembers.filter((member) => member.is_optional),
+    ];
+  } catch (err) {
+    console.warn(
+      "🖐️️ [langmanus]\n\nError connecting to langmanus backend. Please ensure the latest version is running locally. See: https://github.com/langmanus/langmanus.\n\nRaw network error: ",
+    );
+    console.error(err);
+    return [];
+  }
 }
