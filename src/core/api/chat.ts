@@ -19,7 +19,8 @@ export function chatStream(
     (env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api") + "/chat/stream",
     {
       body: JSON.stringify({
-        messages: [...state.messages, userMessage],
+        // TODO: add `thread_id` in the future
+        messages: [userMessage],
         deep_thinking_mode: params.deepThinkingMode,
         search_before_planning: params.searchBeforePlanning,
         debug:
