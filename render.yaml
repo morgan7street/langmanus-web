@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: langmanus-web
+    env: docker
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: NEXT_PUBLIC_API_URL
+        value: https://langmanus.onrender.com/api
+    healthCheckPath: /
+    autoDeploy: true 
